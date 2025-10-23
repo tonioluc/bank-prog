@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" 
+             xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+    
+    <persistence-unit name="EJBProjectPU" transaction-type="JTA">
+        <jta-data-source>jdbc/ejbappDS</jta-data-source>
+        
+        <!-- Les classes viennent du module shared -->
+        <class>com.entreprise.entities.Direction</class>
+        <class>com.entreprise.entities.Role</class>
+        <class>com.entreprise.entities.Utilisateur</class>
+        
+        <!-- Nouvelles entités -->
+        <class>com.entreprise.entities.Client</class>
+        <class>com.entreprise.entities.TypeMouvement</class>
+        <class>com.entreprise.entities.StatutMouvementCourant</class>
+        <class>com.entreprise.entities.CompteCourant</class>
+        <class>com.entreprise.entities.MouvementCourant</class>
+        <class>com.entreprise.entities.HistoriqueStatut</class>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+        </properties>
+    </persistence-unit>
+</persistence>
