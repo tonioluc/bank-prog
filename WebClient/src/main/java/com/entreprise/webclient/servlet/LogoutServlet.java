@@ -1,6 +1,6 @@
 package com.entreprise.webclient.servlet;
 
-import com.entreprise.remote.UserSessionRemote;
+import com.entreprise.remote.RoleEtDirectionSessionRemote;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +19,7 @@ public class LogoutServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null) {
             // Récupérer et détruire le Stateful Bean
-            UserSessionRemote userSession = (UserSessionRemote) session.getAttribute("userSession");
+            RoleEtDirectionSessionRemote userSession = (RoleEtDirectionSessionRemote) session.getAttribute("userSession");
             if (userSession != null) {
                 try {
                     userSession.endSession(); // Appelle @Remove

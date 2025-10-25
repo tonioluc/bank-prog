@@ -2,7 +2,7 @@ package com.entreprise.webclient.servlet;
 
 import com.entreprise.dto.UtilisateurDTO;
 import com.entreprise.remote.AuthenticationRemote;
-import com.entreprise.remote.UserSessionRemote;
+//import com.entreprise.remote.UserSessionRemote;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -45,14 +45,13 @@ public class LoginServlet extends HttpServlet {
                 httpSession.setAttribute("user", userDTO);
                 
                 // Créer le Stateful Bean
-                UserSessionRemote userSession = (UserSessionRemote) ic.lookup(
+                /*UserSessionRemote userSession = (UserSessionRemote) ic.lookup(
                     "java:global/EJBProject-1.0-SNAPSHOT/UserSessionBean!com.entreprise.remote.UserSessionRemote"
                 );
-                
                 // Stocker les DTOs dans le Stateful Bean
                 userSession.setUserData(userDTO.getRole(), userDTO.getDirection() , userDTO);
-                httpSession.setAttribute("userSession", userSession);
-                
+                httpSession.setAttribute("typeAndDirection", userSession);
+                */
                 response.sendRedirect("dashboard.jsp");
                 
             } else {
