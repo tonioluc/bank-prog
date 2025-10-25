@@ -1,6 +1,9 @@
 package com.entreprise.entities;
 
 import java.io.Serializable;
+
+import com.entreprise.dto.RoleDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,5 +35,9 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role{id=" + idRole + ", niveau=" + niveau + "}";
+    }
+
+    public RoleDTO toDTO(){
+        return new RoleDTO(idRole, niveau);
     }
 }

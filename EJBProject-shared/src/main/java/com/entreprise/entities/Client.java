@@ -1,6 +1,9 @@
 package com.entreprise.entities;
 
 import java.io.Serializable;
+
+import com.entreprise.dto.ClientDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,5 +35,9 @@ public class Client implements Serializable {
     @Override
     public String toString() {
         return "Client{idClient=" + idClient + ", nom=" + nom + "}";
+    }
+
+    public ClientDTO toDTO(){
+        return new ClientDTO(this.idClient, this.nom);
     }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,9 +70,8 @@ public class MouvementBean implements MouvementRemote {
             return new ArrayList<>();
         }
     }
-    
-    @Override
-    public MouvementCourantDTO ajouterMouvement(BigDecimal montant, Integer idTypeMouvement, Integer idCompte) {
+
+    public MouvementCourant ajoutDansTableMouv(BigDecimal montant, Integer idTypeMouvement, Integer idCompte){
         try {
             // Récupérer le type de mouvement
             TypeMouvement type = em.find(TypeMouvement.class, idTypeMouvement);
@@ -88,39 +88,45 @@ public class MouvementBean implements MouvementRemote {
             // Créer le mouvement
             MouvementCourant mouvement = new MouvementCourant(montant, type, compte);
             em.persist(mouvement);
-            em.flush();
             
-            System.out.println("✅ Mouvement créé: ID=" + mouvement.getIdMouvement());
-            
-            // Convertir en DTO
-            ClientDTO clientDTO = new ClientDTO(
-                compte.getClient().getIdClient(),
-                compte.getClient().getNom()
-            );
-            
-            CompteCourantDTO compteDTO = new CompteCourantDTO(
-                compte.getIdCompte(),
-                compte.getSolde(),
-                clientDTO
-            );
-            
-            TypeMouvementDTO typeDTO = new TypeMouvementDTO(
-                type.getIdTypeMouvement(),
-                type.getDescription()
-            );
-            
-            return new MouvementCourantDTO(
-                mouvement.getIdMouvement(),
-                mouvement.getMontant(),
-                typeDTO,
-                compteDTO
-            );
+            return mouvement;
             
         } catch (Exception e) {
             System.err.println("❌ Erreur ajouterMouvement: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
+    }
+
+    public HistoriqueMouvementCourantDTO ajoutDansTableHistoriqueMouvementCourant(MouvementCourant mouvementCourant){
+        try {
+            //par défaut "en attente"
+            StatutMouvementCourant statutMouvementCourant = em.find(StatutMouvementCourant.class, 1);
+            if (statutMouvementCourant == null) {
+                throw new Exception("Type de mouvement introuvable");
+            }
+
+            HistoriqueMouvementCourant historiqueMouvement = new HistoriqueMouvementCourant(mouvementCourant, statutMouvementCourant, LocalDate.now());
+            em.persist(historiqueMouvement);
+            
+            return historiqueMouvement.toDTO();
+            
+        } catch (Exception e) {
+            System.err.println("❌ Erreur ajouterMouvement: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    
+    @Override
+    public MouvementCourantDTO ajouterMouvement(BigDecimal montant, Integer idTypeMouvement, Integer idCompte) {
+        //Ajout dans la table mouvement
+        MouvementCourant mouvementCourant = ajoutDansTableMouv(montant, idTypeMouvement, idCompte);
+        //mila ajoutena anaty table historique
+        ajoutDansTableHistoriqueMouvementCourant(mouvementCourant);
+        return mouvementCourant.toDTO();
     }
     
     @Override

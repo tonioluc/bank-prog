@@ -1,6 +1,9 @@
 package com.entreprise.entities;
 
 import java.io.Serializable;
+
+import com.entreprise.dto.UtilisateurDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -48,5 +51,9 @@ public class Utilisateur implements Serializable {
     @Override
     public String toString() {
         return "Utilisateur{id=" + idUtilisateur + ", nom=" + nom + "}";
+    }
+
+    public UtilisateurDTO toDTO(){
+        return new UtilisateurDTO(idUtilisateur, nom, role.toDTO(), direction.toDTO());
     }
 }

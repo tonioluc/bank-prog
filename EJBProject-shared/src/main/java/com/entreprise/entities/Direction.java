@@ -1,6 +1,9 @@
 package com.entreprise.entities;
 
 import java.io.Serializable;
+
+import com.entreprise.dto.DirectionDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,5 +35,9 @@ public class Direction implements Serializable {
     @Override
     public String toString() {
         return "Direction{id=" + idDirection + ", type=" + type + "}";
+    }
+
+    public DirectionDTO toDTO(){
+        return new DirectionDTO(idDirection, type);
     }
 }

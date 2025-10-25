@@ -89,7 +89,7 @@ public class AjouterMouvementServlet extends HttpServlet {
             MouvementCourantDTO mouvement = mouvementBean.ajouterMouvement(montant, idTypeMouvement, idCompte);
             
             if (mouvement != null) {
-                request.setAttribute("success", "Mouvement ajouté avec succès ! ID: " + mouvement.getIdMouvement());
+                request.setAttribute("success", "Mouvement ajouté avec succès !");
             } else {
                 request.setAttribute("error", "Erreur lors de l'ajout du mouvement");
             }

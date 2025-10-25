@@ -1,7 +1,6 @@
 <%@page import="com.entreprise.dto.UtilisateurDTO"%>
 <%@page import="com.entreprise.dto.RoleDTO"%>
 <%@page import="com.entreprise.dto.DirectionDTO"%>
-<%@page import="com.entreprise.remote.UserSessionRemote"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     // Vérifier la session
@@ -11,10 +10,10 @@
     }
     
     UtilisateurDTO userDTO = (UtilisateurDTO) session.getAttribute("user");
-    UserSessionRemote userSession = (UserSessionRemote) session.getAttribute("userSession");
+    /*UserSessionRemote userSession = (UserSessionRemote) session.getAttribute("userSession");
     
     RoleDTO role = userSession.getUserRole();
-    DirectionDTO direction = userSession.getUserDirection();
+    DirectionDTO direction = userSession.getUserDirection();*/
 %>
 <!DOCTYPE html>
 <html>
@@ -228,19 +227,11 @@
         
         <!-- Informations utilisateur -->
         <div class="user-info">
-            <h2>📋 Vos informations</h2>
+            <h2>Vos informations</h2>
             <div class="info-grid">
                 <div class="info-item">
                     <label>Utilisateur</label>
                     <span><%= userDTO.getNom() %></span>
-                </div>
-                <div class="info-item">
-                    <label>Niveau de rôle</label>
-                    <span><%= role.getNiveau() %></span>
-                </div>
-                <div class="info-item">
-                    <label>Direction</label>
-                    <span><%= direction.getType() %></span>
                 </div>
             </div>
         </div>
@@ -252,14 +243,12 @@
             <div class="actions-list">
                 <!-- Action 1 : Ajouter un mouvement -->
                 <a href="ajouterMouvement" class="action-card add">
-                    <div class="icon">➕</div>
                     <div class="title">Ajouter un mouvement</div>
                     <div class="description">Créer un nouveau mouvement dans le système</div>
                 </a>
                 
                 <!-- Action 2 : Valider des mouvements -->
                 <a href="validerMouvements" class="action-card validate">
-                    <div class="icon">✅</div>
                     <div class="title">Valider des mouvements</div>
                     <div class="description">Consulter et valider les mouvements en attente</div>
                 </a>

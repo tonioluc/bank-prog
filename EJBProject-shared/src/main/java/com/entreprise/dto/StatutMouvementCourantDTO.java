@@ -1,28 +1,18 @@
-package com.entreprise.entities;
+package com.entreprise.dto;
 
 import java.io.Serializable;
 
-import com.entreprise.dto.StatutMouvementCourantDTO;
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "statut_mouvement_courant")
-public class StatutMouvementCourant implements Serializable {
+public class StatutMouvementCourantDTO implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idstatut")
     private Integer idStatut;
     
-    @Column(name = "description", length = 50)
     private String description;
     
-    public StatutMouvementCourant() {}
+    public StatutMouvementCourantDTO() {}
     
-    public StatutMouvementCourant(String description) {
+    public StatutMouvementCourantDTO(String description) {
         this.description = description;
     }
     
@@ -32,11 +22,7 @@ public class StatutMouvementCourant implements Serializable {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     
-    @Override
     public String toString() {
         return "StatutMouvementCourant{idStatut=" + idStatut + ", description=" + description + "}";
-    }
-    public StatutMouvementCourantDTO toDTO(){
-        return new StatutMouvementCourantDTO(description);
     }
 }

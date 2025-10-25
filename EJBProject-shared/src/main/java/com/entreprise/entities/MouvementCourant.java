@@ -2,6 +2,9 @@ package com.entreprise.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
+import com.entreprise.dto.MouvementCourantDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -49,5 +52,9 @@ public class MouvementCourant implements Serializable {
     @Override
     public String toString() {
         return "MouvementCourant{idMouvement=" + idMouvement + ", montant=" + montant + "}";
+    }
+
+    public MouvementCourantDTO toDTO(){
+        return new MouvementCourantDTO(idMouvement, montant, typeMouvement.toDTO(), compte.toDTO());
     }
 }

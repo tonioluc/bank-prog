@@ -2,6 +2,9 @@ package com.entreprise.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
+import com.entreprise.dto.CompteCourantDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -41,5 +44,9 @@ public class CompteCourant implements Serializable {
     @Override
     public String toString() {
         return "CompteCourant{idCompte=" + idCompte + ", solde=" + solde + ", client=" + client + "}";
+    }
+
+    public CompteCourantDTO toDTO(){
+        return new CompteCourantDTO(idCompte, solde, client.toDTO());
     }
 }

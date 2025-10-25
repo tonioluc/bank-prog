@@ -250,7 +250,7 @@
     <div class="container">
         <!-- En-tête -->
         <div class="header">
-            <h1>➕ Ajouter un Mouvement</h1>
+            <h1>Ajouter un Mouvement</h1>
             <p>Créer un nouveau mouvement bancaire</p>
             <div class="user-badge">
                 👤 <%= userDTO.getNom() %>
@@ -272,14 +272,6 @@
                     <%= error %>
                 </div>
             <% } %>
-            
-            <!-- Informations -->
-            <div class="info-box">
-                <p><strong>ℹ️ Instructions :</strong></p>
-                <p>• Sélectionnez le type de mouvement (Crédit ou Débit)</p>
-                <p>• Choisissez le compte concerné</p>
-                <p>• Entrez le montant en Ariary</p>
-            </div>
             
             <!-- Formulaire -->
             <form method="post" action="ajouterMouvement">

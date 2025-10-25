@@ -1,6 +1,9 @@
 package com.entreprise.entities;
 
 import java.io.Serializable;
+
+import com.entreprise.dto.TypeMouvementDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,5 +35,9 @@ public class TypeMouvement implements Serializable {
     @Override
     public String toString() {
         return "TypeMouvement{idTypeMouvement=" + idTypeMouvement + ", description=" + description + "}";
+    }
+
+    public TypeMouvementDTO toDTO(){
+        return new TypeMouvementDTO(idTypeMouvement, description);
     }
 }
