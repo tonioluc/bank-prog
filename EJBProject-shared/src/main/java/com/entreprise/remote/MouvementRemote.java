@@ -21,4 +21,6 @@ public interface MouvementRemote {
     
     // Récupérer tous les mouvements
     List<MouvementCourantDTO> getAllMouvements();
+
+    List<MouvementCourantDTO> getMouvementsEnAttente();
 }

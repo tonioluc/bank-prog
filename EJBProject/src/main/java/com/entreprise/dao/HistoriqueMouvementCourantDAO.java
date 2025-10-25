@@ -12,29 +12,43 @@ import jakarta.persistence.PersistenceContext;
 public class HistoriqueMouvementCourantDAO {
     @PersistenceContext(unitName = "EJBProjectPU")
     private EntityManager em;
-    
+
     public HistoriqueMouvementCourant create(HistoriqueMouvementCourant HistoriqueMouvementCourant) {
         em.persist(HistoriqueMouvementCourant);
         return HistoriqueMouvementCourant;
     }
-    
+
     public HistoriqueMouvementCourant findById(Integer id) {
         return em.find(HistoriqueMouvementCourant.class, id);
     }
-    
+
     public List<HistoriqueMouvementCourant> findAll() {
-        return em.createQuery("SELECT d FROM HistoriqueMouvementCourant d ORDER BY d.type", HistoriqueMouvementCourant.class)
-                 .getResultList();
+        return em
+                .createQuery("SELECT d FROM HistoriqueMouvementCourant d ORDER BY d.type",
+                        HistoriqueMouvementCourant.class)
+                .getResultList();
     }
-    
+
     public HistoriqueMouvementCourant update(HistoriqueMouvementCourant HistoriqueMouvementCourant) {
         return em.merge(HistoriqueMouvementCourant);
     }
-    
+
     public void delete(Integer id) {
         HistoriqueMouvementCourant HistoriqueMouvementCourant = findById(id);
         if (HistoriqueMouvementCourant != null) {
             em.remove(HistoriqueMouvementCourant);
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public List<HistoriqueMouvementCourant> findByStatut(Integer idStatut) {
+        return em.createNativeQuery(
+                "SELECT * FROM historique_mouvement_courant " +
+                        "WHERE idStatut = ? " +
+                        "ORDER BY dateDeChangement DESC",
+                HistoriqueMouvementCourant.class)
+                .setParameter(1, idStatut)
+                .getResultList();
+    }
+
 }

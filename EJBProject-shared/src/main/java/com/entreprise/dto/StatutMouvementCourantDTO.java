@@ -25,4 +25,6 @@ public class StatutMouvementCourantDTO implements Serializable {
     public String toString() {
         return "StatutMouvementCourant{idStatut=" + idStatut + ", description=" + description + "}";
     }
+
+    
 }
