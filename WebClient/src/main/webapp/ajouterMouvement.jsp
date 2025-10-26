@@ -1,4 +1,6 @@
 <%@page import="com.entreprise.dto.*"%>
+<%@page import="com.entreprise.devises.dto.*"%>
+
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -15,6 +17,9 @@
     
     @SuppressWarnings("unchecked")
     List<CompteCourantDTO> comptes = (List<CompteCourantDTO>) request.getAttribute("comptes");
+
+    @SuppressWarnings("unchecked")
+    List<DeviseDTO> devises = (List<DeviseDTO>) request.getAttribute("devises");
     
     String error = (String) request.getAttribute("error");
     String success = (String) request.getAttribute("success");
@@ -327,7 +332,7 @@
                 <!-- Montant -->
                 <div class="form-group">
                     <label for="montant">
-                        Montant (Ar) <span>*</span>
+                        Montant<span>*</span>
                     </label>
                     <input 
                         type="number" 
@@ -339,6 +344,30 @@
                         required
                     />
                     <small>Entrez le montant en Ariary (format: 50000.00)</small>
+                </div>
+
+                <!-- Devises -->
+                <div class="form-group">
+                    <label for="devise">
+                        Devises <span>*</span>
+                    </label>
+                    <select id="devise" name="devise" required>
+                        <option value="">-- Sélectionnez un compte --</option>
+                        <%  
+                        if (devises != null && !devises.isEmpty()) {
+                            for (DeviseDTO devise : devises) { 
+                        %>
+                            <option value="<%= devise.getCode() %>">
+                                <%= devise.getCode()%> 
+                                <%-- (devise #<%= devise.getIdCompte() %> - Solde: <%= String.format("%,.2f", devise.getSolde()) %> Ar) --%>
+                            </option>
+                        <% 
+                            }
+                        } else {
+                        %>
+                            <option value="" disabled>Aucun devise disponible</option>
+                        <% } %>
+                    </select>
                 </div>
                 
                 <!-- Boutons -->
