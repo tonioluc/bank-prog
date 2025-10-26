@@ -368,12 +368,12 @@
                                         <button 
                                             class="btn btn-valider" 
                                             onclick="confirmerAction('valider', <%= mvt.getIdMouvement() %>, '<%= montantFormate %>')">
-                                            ✓ Valider
+                                            Valider
                                         </button>
                                         <button 
                                             class="btn btn-refuser" 
                                             onclick="confirmerAction('refuser', <%= mvt.getIdMouvement() %>, '<%= montantFormate %>')">
-                                            ✗ Refuser
+                                            Refuser
                                         </button>
                                     </div>
                                 </td>

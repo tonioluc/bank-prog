@@ -1,6 +1,9 @@
 package com.entreprise.session;
 
+import com.entreprise.dao.CompteCourantDAO;
 import com.entreprise.dao.HistoriqueMouvementCourantDAO;
+import com.entreprise.dao.MouvementCourantDAO;
+import com.entreprise.dao.StatutMouvementCourantDAO;
 import com.entreprise.dto.*;
 import com.entreprise.entities.*;
 import com.entreprise.remote.MouvementRemote;
@@ -11,7 +14,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,15 @@ public class MouvementBean implements MouvementRemote {
 
     @EJB
     private HistoriqueMouvementCourantDAO historiqueMouvementCourantDAO;
+
+    @EJB
+    private MouvementCourantDAO mouvementCourantDAO;
+
+    @EJB
+    private StatutMouvementCourantDAO statutMouvementCourantDAO;
+
+    @EJB
+    private CompteCourantDAO compteCourantDAO;
 
     @Override
     public List<TypeMouvementDTO> getAllTypesMouvement() {
@@ -109,7 +121,7 @@ public class MouvementBean implements MouvementRemote {
             }
 
             HistoriqueMouvementCourant historiqueMouvement = new HistoriqueMouvementCourant(mouvementCourant,
-                    statutMouvementCourant, LocalDate.now());
+                    statutMouvementCourant, LocalDateTime.now());
             em.persist(historiqueMouvement);
 
             return historiqueMouvement.toDTO();
@@ -176,7 +188,7 @@ public class MouvementBean implements MouvementRemote {
     public List<MouvementCourantDTO> getMouvementsEnAttente() {
         try {
             List<MouvementCourantDTO> result = new ArrayList<>();
-            
+
             List<HistoriqueMouvementCourant> historiqueMouvementCourants = historiqueMouvementCourantDAO
                     .findByStatut(1);
             List<MouvementCourant> mouvementCourants = new ArrayList<>();
@@ -193,5 +205,39 @@ public class MouvementBean implements MouvementRemote {
             return new ArrayList<>();
         }
 
+    }
+
+    @Override
+    public boolean validerOuRefuserMouvementCourant(Integer idMouvement, Integer idStatut) {
+        try {
+            // Ajout dans la table historique_mouvement_courant
+            MouvementCourant mouvementCourant = mouvementCourantDAO.findById(idMouvement);
+            StatutMouvementCourant statutMouvementCourant = statutMouvementCourantDAO.findById(idStatut);
+            HistoriqueMouvementCourant historiqueMouvementCourant = new HistoriqueMouvementCourant(mouvementCourant,
+                    statutMouvementCourant, LocalDateTime.now());
+            HistoriqueMouvementCourant historiqueMouvementCourantCreated = historiqueMouvementCourantDAO
+                    .create(historiqueMouvementCourant);
+            System.out.println("Validation ou refus fait avec success");
+
+            // Mise à jour du solde du client si valider
+            if (idStatut == 2) {
+
+                CompteCourant compteCourant = mouvementCourant.getCompte();
+                if (mouvementCourant.getTypeMouvement().getIdTypeMouvement() == 1) {
+                    compteCourant.setSolde(mouvementCourant.getMontant().add(compteCourant.getSolde()));
+                } else {
+                    compteCourant.setSolde(compteCourant.getSolde().subtract(mouvementCourant.getMontant()));
+                }
+                CompteCourant compteCourantUpdated = compteCourantDAO.update(compteCourant);
+                System.out.println("Solde mis à jour avec success");
+                System.out.println(compteCourantUpdated.toString());
+            }
+
+            System.out.println(historiqueMouvementCourantCreated.toString());
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+            return false;
+        }
     }
 }

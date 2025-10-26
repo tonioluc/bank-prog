@@ -1,7 +1,7 @@
 package com.entreprise.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class HistoriqueMouvementCourantDTO implements Serializable {
     
@@ -11,11 +11,11 @@ public class HistoriqueMouvementCourantDTO implements Serializable {
     
     private StatutMouvementCourantDTO statut;
     
-    private LocalDate dateDeChangement;
+    private LocalDateTime dateDeChangement;
     
     public HistoriqueMouvementCourantDTO() {}
     
-    public HistoriqueMouvementCourantDTO(MouvementCourantDTO mouvement, StatutMouvementCourantDTO statut, LocalDate dateDeChangement) {
+    public HistoriqueMouvementCourantDTO(MouvementCourantDTO mouvement, StatutMouvementCourantDTO statut, LocalDateTime dateDeChangement) {
         this.mouvement = mouvement;
         this.statut = statut;
         this.dateDeChangement = dateDeChangement;
@@ -27,6 +27,6 @@ public class HistoriqueMouvementCourantDTO implements Serializable {
     public StatutMouvementCourantDTO getStatut() { return statut; }
     public void setStatut(StatutMouvementCourantDTO statut) { this.statut = statut; }
     
-    public LocalDate getDateDeChangement() { return dateDeChangement; }
-    public void setDateDeChangement(LocalDate dateDeChangement) { this.dateDeChangement = dateDeChangement; }
+    public LocalDateTime getDateDeChangement() { return dateDeChangement; }
+    public void setDateDeChangement(LocalDateTime dateDeChangement) { this.dateDeChangement = dateDeChangement; }
 }

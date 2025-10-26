@@ -23,4 +23,6 @@ public interface MouvementRemote {
     List<MouvementCourantDTO> getAllMouvements();
 
     List<MouvementCourantDTO> getMouvementsEnAttente();
+
+    boolean validerOuRefuserMouvementCourant(Integer idMouvement,Integer idStatut);
 }
