@@ -7,6 +7,8 @@ import com.entreprise.dto.CompteCourantDTO;
 import com.entreprise.dto.MouvementCourantDTO;
 import com.entreprise.dto.TypeMouvementDTO;
 import com.entreprise.remote.MouvementRemote;
+import com.entreprise.webclient.util.DeviseRestClient;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Properties; // ← Pour utiliser la classe Properties
+import javax.naming.Context; // ← Pour la constante Context.*
 import javax.naming.InitialContext;
 
 @WebServlet(name = "AjouterMouvementServlet", urlPatterns = { "/ajouterMouvement" })
@@ -35,9 +39,29 @@ public class AjouterMouvementServlet extends HttpServlet {
         request.setAttribute("comptes", comptes);
 
         // ⭐ Charger les devises
-        DeviseConversionRemote deviseBean = (DeviseConversionRemote) ic.lookup(
-                "java:global/DevisesEJB-1.0-SNAPSHOT/DeviseConversionBean!com.entreprise.devises.remote.DeviseConversionRemote");
-        List<DeviseDTO> devises = deviseBean.getAllDevises();
+        // Properties props = new Properties();
+        // props.put(Context.INITIAL_CONTEXT_FACTORY,
+        // "com.sun.enterprise.naming.SerialInitContextFactory");
+        // props.put(Context.URL_PKG_PREFIXES, "com.sun.enterprise.naming");
+        // props.put(Context.STATE_FACTORIES,
+        // "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl");
+
+        // // ⚠️ C’est ici que tu indiques le GlassFish Docker
+        // props.put("org.omg.CORBA.ORBInitialHost", "localhost"); // si ton Docker
+        // tourne localement
+        // props.put("org.omg.CORBA.ORBInitialPort", "3701"); // port exposé par ton
+        // docker (-p 3701:3700)
+
+        // // Création du contexte JNDI distant
+        // InitialContext ic2 = new InitialContext(props);
+
+        // DeviseConversionRemote deviseBean = (DeviseConversionRemote) ic2.lookup(
+        // "java:global/DevisesEJB-1.0-SNAPSHOT/DeviseConversionBean!com.entreprise.devises.remote.DeviseConversionRemote");
+        // List<DeviseDTO> devises = deviseBean.getAllDevises();
+
+        // ⭐ Appel REST au lieu de JNDI
+        System.out.println("Appel Web service");
+        List<DeviseDTO> devises = DeviseRestClient.getAllDevises();
         request.setAttribute("devises", devises);
 
     }
@@ -95,7 +119,7 @@ public class AjouterMouvementServlet extends HttpServlet {
 
             // Appeler l'EJB
             InitialContext ic = new InitialContext();
-            montant = conversionEnAriary(montant, devise, ic);
+            montant = conversionEnAriary(montant, devise);
             System.out.println("Valeur montant après conversion = " + montant);
             MouvementRemote mouvementBean = (MouvementRemote) ic.lookup(
                     "java:global/EJBProject-1.0-SNAPSHOT/MouvementBean!com.entreprise.remote.MouvementRemote");
@@ -130,19 +154,59 @@ public class AjouterMouvementServlet extends HttpServlet {
         }
     }
 
-    private BigDecimal conversionEnAriary(BigDecimal montant, String devise, InitialContext ic) throws Exception {
-        if (!"AR".equals(devise.toUpperCase())) {
-            DeviseConversionRemote deviseBean = (DeviseConversionRemote) ic.lookup(
-                    "java:global/DevisesEJB-1.0-SNAPSHOT/DeviseConversionBean!com.entreprise.devises.remote.DeviseConversionRemote");
+    private BigDecimal conversionEnAriary(BigDecimal montant, String devise) throws Exception {
+        // ⚙️ Configuration du contexte JNDI distant (vers le Docker)
+        // Properties props = new Properties();
+        // props.put(Context.INITIAL_CONTEXT_FACTORY,
+        // "com.sun.enterprise.naming.SerialInitContextFactory");
+        // props.put(Context.URL_PKG_PREFIXES, "com.sun.enterprise.naming");
+        // props.put(Context.STATE_FACTORIES,
+        // "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl");
 
-            ConversionResultDTO conversion = deviseBean.convertirEnAriary(devise, montant);
+        // // ⚠️ C’est ici que tu indiques le GlassFish Docker
+        // props.put("org.omg.CORBA.ORBInitialHost", "localhost"); // si ton Docker
+        // tourne localement
+        // props.put("org.omg.CORBA.ORBInitialPort", "3701"); // port exposé par ton
+        // docker (-p 3701:3700)
 
-            if (!conversion.isSuccess()) {
-                throw new Exception("Erreur conversion: " + conversion.getMessage());
-            }
-            System.out.println("Vita conversion = " + conversion.getMontantAriary());
-            return conversion.getMontantAriary();
+        // // Création du contexte JNDI distant
+        // InitialContext ic = new InitialContext(props);
+
+        // if (!"AR".equalsIgnoreCase(devise)) {
+        // String jndiName =
+        // "java:global/DevisesEJB-1.0-SNAPSHOT/DeviseConversionBean!com.entreprise.devises.remote.DeviseConversionRemote";
+        // System.out.println("🔍 Lookup distant sur : " + jndiName);
+
+        // DeviseConversionRemote deviseBean = (DeviseConversionRemote)
+        // ic.lookup(jndiName);
+
+        // ConversionResultDTO conversion = deviseBean.convertirEnAriary(devise,
+        // montant);
+
+        // if (!conversion.isSuccess()) {
+        // throw new Exception("Erreur conversion: " + conversion.getMessage());
+        // }
+
+        // System.out.println("✅ Conversion réussie = " +
+        // conversion.getMontantAriary());
+        // return conversion.getMontantAriary();
+        // }
+
+        // return montant;
+        if ("AR".equalsIgnoreCase(devise)) {
+            return montant;
         }
-        return montant;
+
+        // ⭐ Appel REST au lieu de JNDI
+        System.out.println("🔍 Appel REST pour conversion: " + devise + " " + montant);
+
+        ConversionResultDTO conversion = DeviseRestClient.convertirEnAriary(devise, montant);
+
+        if (!conversion.isSuccess()) {
+            throw new Exception("Erreur conversion: " + conversion.getMessage());
+        }
+
+        System.out.println("✅ Conversion réussie = " + conversion.getMontantAriary());
+        return conversion.getMontantAriary();
     }
 }

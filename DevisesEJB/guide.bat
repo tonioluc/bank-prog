@@ -1,17 +1,15 @@
-@REM -t devises-ejb → nom de l’image que tu vas créer.
+# Reconstruire l'image Docker
+cd /home/antonio/Documents/GitHub/bank-prog/DevisesEJB
+mvn clean package
+docker build -t devises-ejb:2.0 .
 
-@REM Docker va utiliser ton Dockerfile et créer l’image avec ton .war.
-docker build -t devises-ejb:1.0 .
-
-@REM -d → détaché (en arrière-plan).
-@REM -p 8080:8080 → mappe le port 8080 du conteneur vers ton PC.
-@REM --name → nom de ton conteneur.
+# Arrêter et supprimer l'ancien conteneur
 docker stop devises-container
 docker rm devises-container
 
-sudo docker run --name devises-container \
-  -p 8080:8080 \
-  -p 4848:4848 \
-  -p 3700:3700 \
-  devises-ejb:1.0
-@REM Rehefa manova zavatra 
+# Lancer le nouveau conteneur
+docker run --name devises-container \
+  -p 8081:8080 \
+  -p 4849:4848 \
+  -p 3701:3700 \
+  devises-ejb:2.0

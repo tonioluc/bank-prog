@@ -4,7 +4,7 @@ import com.entreprise.devises.dto.ConversionResultDTO;
 import com.entreprise.devises.dto.DeviseDTO;
 import com.entreprise.devises.remote.DeviseConversionRemote;
 import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Stateful;
+import jakarta.ejb.Stateless;
 import jakarta.ejb.Remove;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Stateful
+@Stateless
 public class DeviseConversionBean implements DeviseConversionRemote {
     
     private Map<String, DeviseDTO> devises;
@@ -163,9 +163,4 @@ public class DeviseConversionBean implements DeviseConversionRemote {
         return "AR".equals(code) || "MGA".equals(code) || devises.containsKey(code);
     }
     
-    @Remove
-    public void endSession() {
-        System.out.println("✅ Session DeviseConversion terminée");
-        devises.clear();
-    }
 }
